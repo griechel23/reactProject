@@ -10,25 +10,12 @@ interface SquareProps {
   onClick: () => void;
 }
 
-interface SquareState {
-  value?: string;
-}
-
-class Square extends React.Component<SquareProps, SquareState> {
-
-  constructor(props: SquareProps) {
-    super(props);
-    this.state = {
-      value: props.value,
-    }
-  }
-  render() {
-    return (
-      <button className="square" onClick={this.props.onClick}>
-        {this.props.value}
-      </button>
-    );
-  }
+function Square(props: SquareProps) {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
 }
   
 
@@ -61,15 +48,19 @@ class Board extends React.Component<{}, BoardState> {
       console.log("square already taken");
       return;
     }
-    
+
     const isX = this.state.isX;
-    squares[value] = isX ? 'X' : 'O';
+    squares[value] = this.nextPlayer();
     this.setState({squares: squares});
     this.setState({isX: !isX});
   }
 
+  nextPlayer = ()=> {
+    return this.state.isX ? 'X' : 'O';
+  }
+
   render() {
-    const status = 'Next player: X';
+    const status = 'Next player: ' + this.nextPlayer();
 
     return (
       <div>
