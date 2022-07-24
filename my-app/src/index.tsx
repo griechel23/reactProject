@@ -7,6 +7,7 @@ import './index.css';
 
 interface SquareProps {
   value: string;
+  onClick: () => void;
 }
 
 interface SquareState {
@@ -23,35 +24,48 @@ class Square extends React.Component<SquareProps, SquareState> {
   }
   render() {
     return (
-      <button className="square" onClick={this.renderTurn}>
-        {this.state.value}
+      <button className="square" onClick={this.props.onClick}>
+        {this.props.value}
       </button>
     );
-  }
-
-  renderTurn = ()=> {
-    if (this.state.value) {
-      console.log("square already has been marked")
-    } else {
-      this.setState({value: 'X'});
-    }
   }
 }
   
 
 interface BoardState {
   squares: string[];
+  isX : boolean;
 }
 
 class Board extends React.Component<{}, BoardState> {
+
   constructor(props: {}) {
     super(props);
     this.state = {
       squares: Array(9).fill(null),
+      isX: true,
     }
   }
+
   renderSquare(i: number) {
-    return <Square value={this.state.squares[i]} />;
+    return <Square 
+      value={this.state.squares[i]} 
+      onClick={() => this.handleClick(i)}
+    />;
+  }
+
+  handleClick = (value : number) => {
+    const squares = this.state.squares;
+    // const squares = this.state.squares.slice(); ???
+    if (squares[value]) {
+      console.log("square already taken");
+      return;
+    }
+    
+    const isX = this.state.isX;
+    squares[value] = isX ? 'X' : 'O';
+    this.setState({squares: squares});
+    this.setState({isX: !isX});
   }
 
   render() {
